@@ -71,6 +71,9 @@ static void llama_log_callback_default(llama_log_level level, const char * text,
 #define LLAMA_MAX_SCRATCH_BUFFERS 16
 #endif
 
+#ifdef GGML_USE_CPU_HBM
+#include <hbwmalloc.h>
+#endif
 
 // available llama models
 enum e_model {
@@ -789,7 +792,11 @@ struct llama_model_loader {
             // allocate temp buffer if not using mmap
             if (!use_mmap && lt.data == NULL) {
                 GGML_ASSERT(lt.ggml_tensor->backend != GGML_BACKEND_CPU);
+                #ifdef GGML_USE_CPU_HBM
+                lt.data = (uint8_t*)hbw_malloc(ggml_nbytes(lt.ggml_tensor));
+                #else
                 lt.data = (uint8_t*)malloc(ggml_nbytes(lt.ggml_tensor));
+                #endif
             }
 
             load_data_for(lt);
