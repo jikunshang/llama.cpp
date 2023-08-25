@@ -4009,6 +4009,7 @@ inline static void ggml_critical_section_end(void) {
 }
 
 void ggml_numa_init(void) {
+    return ;
     if (g_state.numa.n_nodes > 0) {
         fprintf(stderr, "ggml_numa_init: NUMA already initialized\n");
 
@@ -4074,7 +4075,8 @@ void ggml_numa_init(void) {
 }
 
 bool ggml_is_numa(void) {
-    return g_state.numa.n_nodes > 1;
+    return false;
+    // return g_state.numa.n_nodes > 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
